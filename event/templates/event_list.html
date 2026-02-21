@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Events</title>
+</head>
+<body>
+    <h1>All Events</h1>
+
+    {% for event in events %}
+        <div>
+            <h3>{{ event.title }}</h3>
+            <p>Category: {{ event.category.name }}</p>
+            <p>Date: {{ event.date }}</p>
+            <p>Location: {{ event.location }}</p>
+            <p>Bookings: {{ event.total_bookings }}</p>
+        </div>
+        <hr>
+    {% endfor %}
+</body>
+</html>
