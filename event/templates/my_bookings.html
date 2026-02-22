@@ -1,0 +1,24 @@
+{% extends "navber.html" %}
+{% block title %}My Bookings{% endblock %}
+
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-8">My Bookings</h1>
+
+<div class="grid md:grid-cols-2 gap-6">
+    {% for booking in bookings %}
+        <div class="bg-white p-6 rounded-2xl shadow">
+            <h3 class="text-xl font-semibold text-indigo-600">
+                {{ booking.event.title }}
+            </h3>
+
+            <p>📍 {{ booking.event.location }}</p>
+            <p>🎟 Quantity: {{ booking.quantity }}</p>
+            <p>📅 {{ booking.booked_at }}</p>
+        </div>
+    {% empty %}
+        <p>No bookings yet.</p>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "navber.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-8 text-red-600">
+    Admin Dashboard
+</h1>
+
+<div class="grid md:grid-cols-2 gap-6">
+    <div class="bg-white p-6 rounded-2xl shadow text-center">
+        <h2>Total Events</h2>
+        <p class="text-3xl text-indigo-600">{{ total_events }}</p>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl shadow text-center">
+        <h2>Total Bookings</h2>
+        <p class="text-3xl text-indigo-600">{{ total_bookings }}</p>
+    </div>
+</div>
+
+{% endblock %}

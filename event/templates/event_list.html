@@ -1,20 +1,74 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Events</title>
-</head>
-<body>
-    <h1>All Events</h1>
+{% extends "navber.html" %}
+{% block title %}All Events{% endblock %}
 
-    {% for event in events %}
-        <div>
-            <h3>{{ event.title }}</h3>
-            <p>Category: {{ event.category.name }}</p>
-            <p>Date: {{ event.date }}</p>
-            <p>Location: {{ event.location }}</p>
-            <p>Bookings: {{ event.total_bookings }}</p>
+{% block content %}
+
+<h1 class="text-3xl font-bold mb-6">All Events</h1>
+
+<!-- Search -->
+<form method="get" class="mb-6 flex gap-3">
+    <input type="text" name="q" placeholder="Search events..."
+        value="{{ request.GET.q }}"
+        class="border px-4 py-2 rounded w-full">
+
+    <button class="bg-indigo-600 text-white px-6 rounded">
+        Search
+    </button>
+</form>
+
+<div class="grid md:grid-cols-3 gap-6">
+    {% for event in page_obj %}
+        <div class="bg-white p-6 rounded-2xl shadow-lg">
+            <h3 class="text-xl font-semibold text-indigo-600">
+                {{ event.title }}
+            </h3>
+
+            <p class="text-gray-600">{{ event.category.name }}</p>
+            <p>📍 {{ event.location }}</p>
+            <p>💺 Seats: {{ event.available_seats }}</p>
+            <p>📊 Bookings: {{ event.total_bookings }}</p>
+
+            {% if user.is_authenticated %}
+            <form method="post" action="{% url 'book_event' event.id %}" class="mt-4">
+                {% csrf_token %}
+                <input type="number" name="quantity" value="1" min="1"
+                    class="border rounded px-2 py-1 w-20">
+                <button class="bg-indigo-600 text-white px-4 py-1 rounded">
+                    Book
+                </button>
+            </form>
+            {% endif %}
         </div>
-        <hr>
     {% endfor %}
-</body>
-</html>
+</div>
+
+<!-- Pagination -->
+<div class="mt-8 flex justify-center space-x-2">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}"
+           class="px-3 py-1 bg-gray-300 rounded">Previous</a>
+    {% endif %}
+
+    <span class="px-3 py-1 bg-indigo-600 text-white rounded">
+        {{ page_obj.number }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}"
+        class="px-3 py-1 bg-gray-300 rounded">Next</a>
+    {% endif %}
+</div>
+
+
+    <p>
+    💺 Seats:
+    {% if event.available_seats > 5 %}
+    <span class="text-green-600">{{ event.available_seats }}</span>
+    {% else %}
+    <span class="text-red-600 font-semibold">
+        Only {{ event.available_seats }} left!
+    </span>
+    {% endif %}
+    </p>
+
+{% endblock %}
