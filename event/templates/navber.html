@@ -1,36 +1,96 @@
 <!DOCTYPE html>
-<html>
+<html id="htmlTag">
 <head>
     <title>{% block title %}Event System{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
 
     <!-- Navbar -->
-    <nav class="bg-indigo-600 p-4 shadow-lg">
+    <nav class="bg-indigo-600 dark:bg-gray-800">
         <div class="max-w-6xl mx-auto flex justify-between items-center text-white">
             <a href="/" class="text-2xl font-bold">EventPro</a>
 
-            <div class="space-x-4">
-                <a href="/" class="hover:underline">Events</a>
-                <a href="{% url 'dashboard' %}" class="hover:underline">Dashboard</a>
+            <div class="flex items-center gap-4">
+                <a href="/" class="hover:text-gray-500 transition">Events</a>
+                <a href="{% url 'dashboard' %}" class="hover:text-gray-500 transition">Dashboard</a>
 
                 {% if user.is_authenticated %}
-                    <span>Hello, {{ user.username }}</span>
-                    <a href="/logout/" class="bg-white text-indigo-600 px-3 py-1 rounded">Logout</a>
+                    <span>{{ user.username }}</span>
+                    <form method="post"
+                        action="{% url 'logout' %}"
+                        class="inline">
+                        {% csrf_token %}
+                        <button type="submit"
+                                class="text-red-500 hover:text-red-700 transition">
+                            Logout
+                        </button>
+                    </form>
                 {% else %}
                     <a href="/login/" class="bg-white text-indigo-600 px-3 py-1 rounded">Login</a>
                     <a href="{% url 'my_bookings' %}" class="hover:underline">
                         My Bookings
                     </a>
+                     <button onclick="toggleDark()"
+                        class="bg-gray-800 text-white px-3 py-1 rounded">
+                        🌙
+                    </button>
                 {% endif %}
             </div>
         </div>
     </nav>
 
+    {% if messages %}
+    <div class="fixed top-5 right-5 space-y-3 z-50">
+        {% for message in messages %}
+            <div class="px-6 py-3 rounded-xl shadow-lg text-white
+                {% if message.tags == 'success' %}
+                    bg-green-500
+                {% elif message.tags == 'error' %}
+                    bg-red-500
+                {% else %}
+                    bg-blue-500
+                {% endif %}
+                animate-bounce"
+                id="toast">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
     <div class="max-w-6xl mx-auto py-10">
         {% block content %}{% endblock %}
     </div>
+
+
+    <script>
+        function toggleDark() {
+        const html = document.getElementById("htmlTag");
+        html.classList.toggle("dark");
+
+            if (html.classList.contains("dark")) {
+                localStorage.setItem("theme", "dark");
+            } else {
+                localStorage.setItem("theme", "light");
+            }
+        }
+
+        window.onload = function() {
+            if (localStorage.getItem("theme") === "dark") {
+                document.getElementById("htmlTag").classList.add("dark");
+            }
+        };
+    </script>
+
+    <script>
+    setTimeout(() => {
+        const toast = document.getElementById("toast");
+        if (toast) {
+            toast.style.display = "none";
+        }
+    }, 3000);
+    </script>
 
 </body>
 </html>

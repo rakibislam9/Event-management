@@ -46,6 +46,7 @@ def book_event(request, event_id):
     quantity = int(request.POST.get("quantity", 1))
 
     if event.available_seats < quantity:
+        messages.success(request, "Booking successful!")
         messages.error(request, "Not enough seats avaolable!")
         return redirect("event_list")
     
@@ -114,8 +115,6 @@ def my_bookings(request):
     return render(request, "my_bookings.html", {
         "bookings": bookings
     })
-
-from django.contrib.admin.views.decorators import staff_member_required
 
 @staff_member_required
 def admin_dashboard(request):
